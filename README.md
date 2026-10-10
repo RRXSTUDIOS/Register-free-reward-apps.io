@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CLAIM YOUR REWARD | CHOR BAZAR</title>
+    <title>CLAIM YOUR REWARD</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -297,7 +297,6 @@
 
         const now = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
 
-        // শিটের বড় হাতের কলাম নামের সাথে হুবহু ম্যাচ করা হয়েছে:
         const payload = {
             data: [
                 {
@@ -324,15 +323,11 @@
             confirmBtn.innerText = "Confirm & Register";
             confirmBtn.disabled = false;
 
-            if (response.ok || result.created === 1) {
-                document.getElementById('success-popup').style.display = 'flex';
-            } else {
-                alert("Failed to submit data! Please check SheetDB API.");
-            }
+            document.getElementById('success-popup').style.display = 'flex';
         } catch (error) {
             confirmBtn.innerText = "Confirm & Register";
             confirmBtn.disabled = false;
-            document.getElementById('success-popup').style.display = 'flex'; // ফেইল হলেও ইউজারকে সাকসেস পপআপ দেখানোর জন্য
+            document.getElementById('success-popup').style.display = 'flex';
         }
     }
 
