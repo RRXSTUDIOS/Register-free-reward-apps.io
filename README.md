@@ -147,4 +147,5 @@
         /* Success Popup */
         #success-popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .success-card { 
-            background: var(--white); width: 88%; max-width: 360px; padding: 30px 20px;
+            background: var(--white); width: 88%; max-width: 360px; padding: 30px 20px; 
+            
